@@ -1,0 +1,23 @@
+FROM php:5.6-apache
+MAINTAINER <devteam@ferimer.es>
+
+RUN a2enmod rewrite
+
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install mysql
+
+RUN apt-get install -y libmagickwand-dev \
+    && pecl install imagick && docker-php-ext-enable imagick
+
+RUN apt-get update && apt-get install -y locales && apt-get clean
+RUN sed -i -e 's/# es_ES ISO-8859-1/es_ES ISO-8859-1/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales
+RUN docker-php-ext-install gettext
+
