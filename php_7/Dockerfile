@@ -1,6 +1,8 @@
 FROM php:7-apache-stretch
 MAINTAINER <devteam@ferimer.es>
 
+COPY ferimer_php_entrypoint /usr/local/bin/
+
 RUN a2enmod rewrite
 
 RUN apt-get update && apt-get install -y \
@@ -11,3 +13,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo_mysql
+
+ENTRYPOINT ["ferimer_php_entrypoint"]
+CMD ["apache2-foreground"]

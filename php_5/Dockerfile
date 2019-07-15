@@ -1,6 +1,8 @@
 FROM php:5.6-apache
 MAINTAINER <devteam@ferimer.es>
 
+COPY ferimer_php_entrypoint /usr/local/bin/
+
 RUN a2enmod rewrite
 
 RUN apt-get update && apt-get install -y \
@@ -20,4 +22,7 @@ RUN apt-get update && apt-get install -y locales && apt-get clean
 RUN sed -i -e 's/# es_ES ISO-8859-1/es_ES ISO-8859-1/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales
 RUN docker-php-ext-install gettext
+
+ENTRYPOINT ["ferimer_php_entrypoint"]
+CMD ["apache2-foreground"]
 

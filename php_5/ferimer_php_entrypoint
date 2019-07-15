@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+if [ ! -z "$WEB_PATH" ] ; then
+  echo "Creating symbolic link on $WEB_PATH to /var/www/html"
+  mkdir -p `dirname $WEB_PATH`
+  ln -s /var/www/html $WEB_PATH
+fi
+
+docker-php-entrypoint $@
+
