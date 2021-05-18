@@ -1,14 +1,38 @@
-FROM ferimer/hosting:php7
+FROM php:7.3-apache
 MAINTAINER <devteam@ferimer.es>
+
+COPY ferimer_php_entrypoint /usr/local/bin/
+
+RUN a2enmod rewrite
 
 RUN apt update && \
     apt dist-upgrade -y && \
-    apt install -y unzip libzip-dev libxml2-dev && \
-    apt autoremove -y && \
-    docker-php-ext-install zip intl xmlrpc soap opcache
+    apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+
+        libmcrypt-dev \
+        libxml2-dev \
+        libicu-dev \
+        openssl \
+
+        unzip \
+        libzip-dev \
+    && apt autoremove -y \
+    && docker-php-source extract \
+    && docker-php-ext-install -j$(nproc) iconv \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install -j$(nproc) mysqli pdo_mysql \
+    && docker-php-ext-install -j$(nproc) zip intl xmlrpc soap opcache \
+    && docker-php-source delete
 
 WORKDIR /var/www/html/
 ADD https://www.prestashop.com/es/file/prestashop_1-7-7-4-zip/download?token=vT6runFc /opt/prestashop_1.7.7.4.zip
 RUN unzip /opt/prestashop_1.7.7.4 && \
     chown -R www-data:www-data /var/www/html
 VOLUME /var/www/html/
+
+ENTRYPOINT ["ferimer_php_entrypoint"]
+CMD ["apache2-foreground"]
