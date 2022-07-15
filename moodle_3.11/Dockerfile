@@ -21,8 +21,8 @@ RUN apt update && \
 RUN mkdir /var/www/moodledata
 VOLUME /var/www/moodledata
 
-ADD https://download.moodle.org/download.php/direct/stable38/moodle-latest-38.tgz /opt
-RUN tar xvzf /opt/moodle-latest-38.tgz --strip 1 && rm /opt/moodle-latest-38.tgz && chown -R www-data:www-data /var/www/html
+ADD https://download.moodle.org/download.php/direct/stable311/moodle-latest-311.tgz /opt
+RUN tar xvzf /opt/moodle-latest-311.tgz --strip 1 && rm /opt/moodle-latest-311.tgz && chown -R www-data:www-data /var/www/html
 VOLUME /var/www/html
 
 
