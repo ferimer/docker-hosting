@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo_mysql \
     && docker-php-ext-install gmp \
-    && docker-php-ext-install zip
+    && docker-php-ext-install zip \
+    && docker-php-ext-install ftp
 
 ENTRYPOINT ["ferimer_php_entrypoint"]
 CMD ["apache2-foreground"]
